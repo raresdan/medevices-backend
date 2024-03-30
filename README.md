@@ -1,4 +1,4 @@
-# Backend with Node.js, Express.js, and TypeScript
+# Node.js + Express.js + TypeScript
 
 This is a basic template for setting up a backend server using Node.js, Express.js, and TypeScript. It provides a starting point for building RESTful APIs or web applications.
 
