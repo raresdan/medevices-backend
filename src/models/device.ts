@@ -1,11 +1,12 @@
 export class Device {
+    private static nextId = 1;
     private id: number;
     private name: string;
     private price: number;
     private image: string;
 
-    public constructor(id: number, name: string, price: number, image: string) {
-        this.id = id;
+    public constructor(name: string, price: number, image: string) {
+        this.id = Device.nextId++;
         this.name = name;
         this.price = price;
         this.image = image;
@@ -27,10 +28,6 @@ export class Device {
         return this.image;
     }
 
-    public setId(id: number): void {
-        this.id = id;
-    }
-
     public setName(name: string): void {
         this.name = name;
     }
@@ -43,3 +40,5 @@ export class Device {
         this.image = image;
     }
 }
+
+export default Device;

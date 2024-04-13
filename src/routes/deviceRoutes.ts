@@ -1,6 +1,5 @@
-
-import express from 'express';
 import { addDevice, deleteDevice, getDeviceById, getDevices, updateDevice } from '../controlers/deviceController';
+const express = require('express');
 
 const router = express.Router();
 
@@ -11,3 +10,4 @@ router.delete('/devices/:id', deleteDevice);
 router.put('/devices/:id', updateDevice);
 
 export default router;
+

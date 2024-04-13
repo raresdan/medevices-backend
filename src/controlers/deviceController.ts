@@ -19,9 +19,8 @@ export const getDeviceById = async (req: Request, res: Response) => {
 
 export const addDevice = async (req: Request, res: Response) => {
     try {
-        const {id, name, price, image } = req.body;
+        const { name, price, image } = req.body;
         const newDevice = new Device(
-            id,
             name,
             price,
             image
