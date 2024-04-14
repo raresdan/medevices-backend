@@ -15,10 +15,16 @@ const medicalDeviceNames = [
     'Dialysis Machine'
 ];
 
-export const devices: Device[] = Array.from({length: 20}, () => {
-    const name = medicalDeviceNames[faker.number.int({ min: 0, max: medicalDeviceNames.length - 1 })]
+export function createDevice(): Device {
+    const name = medicalDeviceNames[faker.number.int({ min: 0, max: medicalDeviceNames.length - 1 })];
     const price = parseFloat(faker.commerce.price());
     const image = faker.image.url(); 
 
     return new Device(name, price, image);
+}
+
+export const devices: Device[] = Array.from({length: 20}, () => {
+    const newDevice = createDevice();
+    return newDevice;
 });
+
