@@ -1,6 +1,6 @@
 import { de, faker } from '@faker-js/faker';
-import { DeviceModel, IDevice } from './models/deviceModel';
-import { BrandModel } from './models/deviceBrand';
+import { DeviceModel, IDevice } from '../models/deviceModel';
+import { BrandModel } from '../models/deviceBrand';
 
 
 const medicalDeviceNames = [
@@ -17,24 +17,27 @@ const medicalDeviceNames = [
 ];
 
 
-export class DeviceList{
+export class DevicesRepository{
 
     public async addDevice(deviceData: any): Promise<IDevice> { 
         const brand = await BrandModel.findOne({name: deviceData.brand});
         if (!brand) {
-            const newBrand = new BrandModel({name: deviceData.brand});
-            await newBrand.save();
+            throw new Error('Inexistent brand');
         }
-        
         const device =  new DeviceModel(deviceData);
         const savedDevice = await device.save();
         return savedDevice;
     }
 
     public async createDevice(): Promise<IDevice> {
+
+        const count = await BrandModel.countDocuments();
+        const randomIndex = Math.floor(Math.random() * count);
+        const existingBrand = await BrandModel.findOne().skip(randomIndex);
+
         const name = medicalDeviceNames[faker.number.int({ min: 0, max: medicalDeviceNames.length - 1 })];
         const price = parseFloat(faker.commerce.price());
-        const brand = faker.company.name();
+        const brand = existingBrand?.name;
         const image = `https://source.unsplash.com/300x300/?${name}`;
         
         const deviceData = {

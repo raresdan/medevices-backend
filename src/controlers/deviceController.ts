@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
-import { DeviceList } from '../dataStore';
+import { DevicesRepository } from '../repositories/deviceRepository';
 import { Device } from '../models/device';
 import { DeviceModel } from '../models/deviceModel';
 import { BrandModel } from '../models/deviceBrand';
 
 
-export const devices = new DeviceList();
+export const devices = new DevicesRepository();
 
 export const getDevices = async (req: Request, res: Response) => {
     try{
@@ -22,7 +22,7 @@ export const getDeviceById = async (req: Request, res: Response) => {
     const id = parseInt(req.params.id);
     const device = await DeviceModel.find({ id: id });
     if (device.length > 0) {
-        res.json(device);
+        return res.status(200).json(device);
     } else {
         res.status(404).send('Device not found');
     }
@@ -54,7 +54,6 @@ export const deleteDevice = async (req: Request, res: Response) => {
         await device.deleteOne();
         res.status(204).send();
     }
-    res.json(device);
 }
 
 export const updateDevice = async (req: Request, res: Response) => {

@@ -1,6 +1,33 @@
 const request = require("supertest");
 const app = require("../app");
 
+const mongoose = require('mongoose');
+
+
+const URI = process.env.MONGODB_URI || 
+'mongodb+srv://goiararesdan:ZqJAiP3zFsyna0Qk@medicaldatabase.kkiup4i.mongodb.net/?retryWrites=true&w=majority&appName=MedicalDatabase';;
+
+beforeAll(async () => {
+  try {
+    await mongoose.connect(URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log('Connected to MongoDB Atlas');
+  } catch (error) {
+    console.error('Error connecting to MongoDB Atlas:', error);
+  }
+});
+
+afterAll(async () => {
+  try {
+    await mongoose.disconnect();
+    console.log('Disconnected from MongoDB Atlas');
+  } catch (error) {
+    console.error('Error disconnecting from MongoDB Atlas:', error);
+  }
+});
+
 
 describe('API Tests', () => {
     let createdDeviceId;
@@ -16,6 +43,7 @@ describe('API Tests', () => {
         const newDevice = {
             name: 'Test Device',
             price: 100,
+            brand: 'test',
             image: 'test.jpg',
         };
 
@@ -30,6 +58,7 @@ describe('API Tests', () => {
         expect(response.statusCode).toEqual(200);
         expect(response.body.name).toEqual('Test Device');
         expect(response.body.price).toEqual(100);
+        expect(response.body.brand).toEqual('test');
         expect(response.body.image).toEqual('test.jpg');
       });
 
@@ -37,6 +66,7 @@ describe('API Tests', () => {
         const updatedDevice = {
             name: 'Updated Device',
             price: 100,
+            brand: 'test',
             image: 'test1.jpg',
         };
 
@@ -46,17 +76,24 @@ describe('API Tests', () => {
         expect(response.statusCode).toEqual(200);
         expect(response.body.name).toEqual('Updated Device');
         expect(response.body.price).toEqual(100);
+        expect(response.body.brand).toEqual('test');
         expect(response.body.image).toEqual('test1.jpg');
     });
 
-    test('should delete an existing device', async () => {
-        const response = await request(app).delete(`/api/devices/${createdDeviceId}`);
-        expect(response.statusCode).toEqual(204);
+    test('should delete an existing device', () => {
+        return request(app)
+            .delete(`/api/devices/${createdDeviceId}`)
+            .then(response => {
+                expect(response.statusCode).toEqual(204);
+            });
     });
-
-    test('should return 404 for non-existing test', async () => {
+    
+    test('should return 404 for non-existing test', () => {
         const nonExistingId = '11111';
-        const res = await request(app).get(`/api/devices/${nonExistingId}`);
-        expect(res.statusCode).toEqual(404);
-      });
+        return request(app)
+            .get(`/api/devices/${nonExistingId}`)
+            .then(res => {
+                expect(res.statusCode).toEqual(404);
+            });
+    });
 }); 
