@@ -13,7 +13,7 @@ router.put('/devices/:id', updateDevice);
 
 // Routes for brands
 router.get('/brands', getBrands);
-router.get('/brands/:brand/devices', getDevicesByBrand);
+router.get('/brands/:brand', getDevicesByBrand);
 router.get('/brands/:id', getBrandById);
 router.post('/addBrand', addBrand);
 router.delete('/brands/:id', deleteBrand);

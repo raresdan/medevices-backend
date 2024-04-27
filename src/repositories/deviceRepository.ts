@@ -52,9 +52,14 @@ export class DevicesRepository{
         return savedDevice;
     }
 
-    public async getDevices(): Promise<IDevice[]> {
+    public async getDevices(page: number): Promise<IDevice[]> {
         try {
-            const devices = await DeviceModel.find({});
+            const pageSize = 50;
+            const skip = page * pageSize;
+
+            const devices = await DeviceModel.find({})
+                                    .skip(skip)
+                                    .limit(pageSize);
             return devices;
         } catch (error) {
             console.error('Error getting devices:', error);

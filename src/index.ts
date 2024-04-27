@@ -1,8 +1,10 @@
 import http from 'http';
 import { Server } from 'socket.io';
-import dotenv from 'dotenv';
+import dotenv, { populate } from 'dotenv';
 import mongoose from 'mongoose';
 import { devices } from './controlers/deviceController';
+import { populateDatabase } from './populateDatabase';
+import { brands } from './controlers/brandsController';
 
 const app = require('./app');
 
@@ -32,6 +34,7 @@ mongoose.connect(MONGOURI)
     console.log('Connected to MongoDB');
     server.listen(PORT, () => {
     console.log(`Server is running on port http://localhost:${PORT}/api`);
+    //populateDatabase(devices, brands);
       });
     })
     .catch((error) => {

@@ -9,8 +9,9 @@ export const brands = new BrandsRepository();
 
 export const getBrands = async (req: Request, res: Response) => {
     try {
-        const brands = await BrandModel.find({});
-        res.json(brands);
+        const page = parseInt(req.query.page as string) || 0;
+        const allBrands = await brands.getBrands(page);
+        res.json(allBrands);
       } catch (error) {
         console.error('Error getting brands:', error);
         res.status(500).json({ message: 'Internal server error' });

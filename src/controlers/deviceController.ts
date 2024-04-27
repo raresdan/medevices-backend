@@ -9,7 +9,8 @@ export const devices = new DevicesRepository();
 
 export const getDevices = async (req: Request, res: Response) => {
     try{
-        const allDevices = await devices.getDevices();
+        const page = parseInt(req.query.page as string) || 0;
+        const allDevices = await devices.getDevices(page);
         res.json(allDevices);
     }
     catch(error){
