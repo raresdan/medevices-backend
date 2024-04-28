@@ -9,8 +9,7 @@ export const brands = new BrandsRepository();
 
 export const getBrands = async (req: Request, res: Response) => {
     try {
-        const page = parseInt(req.query.page as string) || 0;
-        const allBrands = await brands.getBrands(page);
+        const allBrands = await brands.getBrands();
         res.json(allBrands);
       } catch (error) {
         console.error('Error getting brands:', error);

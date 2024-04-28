@@ -3,13 +3,9 @@ import { BrandModel, IBrand } from "../models/deviceBrand";
 
 export class BrandsRepository {
 
-    public async getBrands(page: number): Promise<IBrand[]> {
+    public async getBrands(): Promise<IBrand[]> {
         try {
-            const pageSize = 50;
-            const skip = page * pageSize;
-            const brands = await BrandModel.find({})
-                                    .skip(skip)
-                                    .limit(pageSize);
+            const brands = await BrandModel.find({});
             return brands;
         } catch (error) {
             console.error('Error getting brands:', error);
