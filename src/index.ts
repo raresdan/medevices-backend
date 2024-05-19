@@ -33,7 +33,7 @@ mongoose.connect(MONGOURI)
   .then(() => {
     console.log('Connected to MongoDB');
     server.listen(PORT, () => {
-    console.log(`Server is running on port http://3.123.33.216/:${PORT}/api`);
+    console.log(`Server is running on port http://3.123.33.216:${PORT}/api`);
     //populateDatabase(devices, brands);
       });
     })
