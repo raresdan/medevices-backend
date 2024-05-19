@@ -1,6 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { BrandModel, IBrand } from "../models/deviceBrand";
 
+
 export class BrandsRepository {
 
     public async getBrands(): Promise<IBrand[]> {

@@ -1,12 +1,14 @@
 import { Request, Response } from 'express';
-import { BrandModel } from '../models/deviceBrand';
 import { DeviceModel } from '../models/deviceModel';
 import { Brand } from '../models/brand';
 import { BrandsRepository } from '../repositories/brandsRepository';
+import { BrandModel } from '../models/deviceBrand';
+import { UserDataModel } from '../models/userDataModel';
 
 
 export const brands = new BrandsRepository();
 
+// Get all brands
 export const getBrands = async (req: Request, res: Response) => {
     try {
         const allBrands = await brands.getBrands();
@@ -17,16 +19,27 @@ export const getBrands = async (req: Request, res: Response) => {
       }
 };
 
+// Get all devices by brand name
 export const getDevicesByBrand = async (req: Request, res: Response) => {
-    const brand = req.params.brand;
-    const devices = await DeviceModel.find({ brand: brand });
-    if (devices.length > 0) {
-        res.json(devices);
+    const page = parseInt(req.query.page as string) || 1;
+    const pageSize = 15;
+    const brand_id = req.params.brandid;
+    const brand = await BrandModel.findOne({ brand_id: brand_id});
+    if(!brand) {
+        res.status(404).send('Brand not found');
     } else {
-        res.status(404).send('Devices not found');
+        const devices = await DeviceModel.find({ brand: brand.name })
+                                        .skip((page - 1) * pageSize)
+                                        .limit(pageSize);
+        if (devices.length > 0) {
+            res.json(devices);
+        } else {
+            res.status(404).send('Devices not found');
+        }
     }
 }
 
+// Get brand by id
 export const getBrandById = async (req: Request, res: Response) => {
     const id = parseInt(req.params.id);
     const brand = await BrandModel.find({ brand_id: id });
@@ -37,6 +50,14 @@ export const getBrandById = async (req: Request, res: Response) => {
     }
 };
 
+// Get brands whose id's are not in the UserDataModel
+export const getBrandsUnregistered = async (req: Request, res: Response) => {
+    const userDataBrands = (await UserDataModel.distinct('brand_id')).map(id => id.toString());
+    const brandsNotInUserData = await BrandModel.find({ brand_id: { $nin: userDataBrands } });
+    res.json(brandsNotInUserData);
+}
+
+// Add a brand
 export const addBrand = async (req: Request, res: Response) => {
     try {
         const {  name } = req.body;
@@ -51,6 +72,7 @@ export const addBrand = async (req: Request, res: Response) => {
     }
 }
 
+// Delete a brand
 export const deleteBrand = async (req: Request, res: Response) => {
     const id = parseInt(req.params.id);
     const brand = await BrandModel.findOne({ brand_id: id });
@@ -62,6 +84,7 @@ export const deleteBrand = async (req: Request, res: Response) => {
     }
 }
 
+// Update a brand
 export const updateBrand = async (req: Request, res: Response) => {
     const id = parseInt(req.params.id);
     const brand: any = await BrandModel.findOne({ brand_id: id });
